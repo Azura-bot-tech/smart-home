@@ -1,16 +1,9 @@
-// Temporarily disabled for development
-// import { db } from 'lib/db';
-// import { users, wallets, transactions, categories } from 'lib/schema';
+import { db } from 'lib/db';
+import { users, wallets, transactions, categories } from 'lib/schema';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  return Response.json({
-    message: 'Seeding functionality temporarily disabled.'
-  });
-}
-
-/* Original code commented out
   // Seed Users trước
   const insertedUsers = await db.insert(users).values([
     { name: "Alice", email: "alice@example.com", passwordHash: "hashedpassword1" },
@@ -43,4 +36,8 @@ export async function GET() {
     { walletId: walletIds[1], categoryId: 3, type: "income", amount: "2000.00", description: "Monthly Salary" },
     { walletId: walletIds[2], categoryId: 2, type: "expense", amount: "15.00", description: "Taxi Ride" },
   ]);
-*/
+
+  return Response.json({
+    message: "Database seeded successfully.",
+  });
+}
