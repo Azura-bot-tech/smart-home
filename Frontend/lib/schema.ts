@@ -1,81 +1,62 @@
-import {
-    pgTable,
-    text,
-    numeric,
-    integer,
-    timestamp,
-    pgEnum,
-    serial,
-  } from "drizzle-orm/pg-core";
-  
-  // Enum loại giao dịch
-  export const transactionTypeEnum = pgEnum("transaction_type", ["income", "expense"]);
-  
-  // Bảng Users
-  export const users = pgTable("users", {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
-    email: text("email").notNull().unique(),
-    passwordHash: text("password_hash").notNull(),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  });
-  
-  // Bảng Wallets
-  export const wallets = pgTable("wallets", {
-    id: serial("id").primaryKey(),
-    userId: integer("user_id").references(() => users.id).notNull(),
-    name: text("name").notNull(),
-    balance: numeric("balance", { precision: 12, scale: 2 }).notNull(),
-    currency: text("currency").notNull(),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  });
-  
-  // Bảng Categories
-  export const categories = pgTable("categories", {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
-    type: transactionTypeEnum("type").notNull(),
-  });
-  
-  // Bảng Transactions
-  export const transactions = pgTable("transactions", {
-    id: serial("id").primaryKey(),
-    walletId: integer("wallet_id").references(() => wallets.id).notNull(),
-    categoryId: integer("category_id").references(() => categories.id).notNull(),
-    type: transactionTypeEnum("type").notNull(),
-    amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
-    description: text("description"),
-    transactionDate: timestamp("transaction_date").defaultNow().notNull(),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  });
-  
-  // Bảng Goals
-  export const goals = pgTable("goals", {
-    id: serial("id").primaryKey(),
-    userId: integer("user_id").references(() => users.id).notNull(),
-    name: text("name").notNull(),
-    targetAmount: numeric("target_amount", { precision: 12, scale: 2 }).notNull(),
-    currentAmount: numeric("current_amount", { precision: 12, scale: 2 }).default("0"),
-    dueDate: timestamp("due_date"),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  });
-  
+import mongoose from 'mongoose';
 
-  export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
+// Schema cho Users
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String, required: true },
+  address: { type: String, required: true },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' }
+});
 
+// Schema cho Admins
+const adminSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String, required: true },
+  address: { type: String, required: true },
+  role: { type: String, enum: ['admin'], default: 'admin' }
+});
 
-  export const products = pgTable('products', {
-    id: serial('id').primaryKey(),
-    imageUrl: text('image_url').notNull(),
-    name: text('name').notNull(),
-    status: statusEnum('status').notNull(),
-    price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-    stock: integer('stock').notNull(),
-    availableAt: timestamp('available_at').notNull()
-  });
+// Schema cho Sensor Data
+const sensorDataSchema = new mongoose.Schema({
+  value: { type: Number, required: true },
+  feed_id: { type: String, required: true },
+  feed_key: { type: String, required: true },
+  created_at: { type: Date, default: Date.now },
+  created_epoch: { type: Number, required: true },
+  expiration: { type: Date, required: true }
+});
 
-  
+// Schema cho Log Messages
+const logMessageSchema = new mongoose.Schema({
+  message: { type: String, required: true },
+  time: { type: Date, default: Date.now }
+});
+
+// Models
+export const User = mongoose.models.User || mongoose.model('User', userSchema);
+export const Admin =
+  mongoose.models.Admin || mongoose.model('Admin', adminSchema);
+export const LogMessage =
+  mongoose.models.LogMessage || mongoose.model('LogMessage', logMessageSchema);
+
+// Sensor Models
+export const AmDat =
+  mongoose.models.AmDat || mongoose.model('AmDat', sensorDataSchema);
+export const AnhSang =
+  mongoose.models.AnhSang || mongoose.model('AnhSang', sensorDataSchema);
+export const DoAm =
+  mongoose.models.DoAm || mongoose.model('DoAm', sensorDataSchema);
+export const NhietDo =
+  mongoose.models.NhietDo || mongoose.model('NhietDo', sensorDataSchema);
+export const Led =
+  mongoose.models.Led || mongoose.model('Led', sensorDataSchema);
+export const ModeLed =
+  mongoose.models.ModeLed || mongoose.model('ModeLed', sensorDataSchema);
+export const Pump =
+  mongoose.models.Pump || mongoose.model('Pump', sensorDataSchema);
+export const ModePump =
+  mongoose.models.ModePump || mongoose.model('ModePump', sensorDataSchema);

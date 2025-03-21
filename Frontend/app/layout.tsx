@@ -1,15 +1,8 @@
+'use client';
+
+import { AuthProvider } from '@/lib/context/AuthContext';
 import './globals.css';
-
 import { Analytics } from '@vercel/analytics/react';
-
-export const metadata = {
-  title: {
-    template: '%s | Smart Home',
-    default: 'Smart Home'
-  },
-  description:
-    ' '
-};
 
 export default function RootLayout({
   children
@@ -18,8 +11,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen w-full flex-col">{children}</body>
-      <Analytics />
+      <body className="flex min-h-screen w-full flex-col">
+        <AuthProvider>{children}</AuthProvider>
+        <Analytics />
+      </body>
     </html>
   );
 }
