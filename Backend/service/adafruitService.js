@@ -9,7 +9,7 @@ const ADAFRUIT_FEEDS_URL = process.env.ADAFRUIT_FEEDS_URL;
 
 // Cấu hình MongoDB
 const MONGO_URI = process.env.MONGODB_URI;
-const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
+const MONGODB_SENSOR_DB_NAME = process.env.MONGODB_SENSOR_DB_NAME;
 
 // Mapping giữa feed và collection
 const FEED_TO_COLLECTION = {
@@ -38,7 +38,7 @@ class AdafruitService {
   async connect() {
     try {
       await this.client.connect();
-      this.db = this.client.db(MONGODB_DB_NAME);
+      this.db = this.client.db(MONGODB_SENSOR_DB_NAME);
       console.log("Connected to MongoDB");
     } catch (error) {
       console.error("MongoDB connection error:", error);

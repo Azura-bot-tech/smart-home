@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const config = require("./config/config");
 const adafruitService = require("./service/adafruitService");
+const sensorRoutes = require("./routes/sensorRoutes");
+const authRoutes = require("./routes/auth");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -31,6 +34,11 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Đã xảy ra lỗi!" });
 });
+
+// Thêm routes
+app.use("/api/sensors", sensorRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Khởi chạy server
 const PORT = config.port;
